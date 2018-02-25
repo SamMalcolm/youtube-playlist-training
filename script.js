@@ -70,6 +70,7 @@ function yptInit() {
 
 
 }
+
 var yptminutes;
 var yptseconds;
 
