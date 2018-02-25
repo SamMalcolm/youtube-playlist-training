@@ -1,9 +1,50 @@
 var googleAPIKey = "AIzaSyCsdREJq6CTxnBK6miJxZQqD7zbUbWxot0";
-var ytPlaylistId = "PLT_xscTFmzgouW4pokUU1bfOUdNNyy00t"
-var yptPageDetails = {
-    "theme":"#e60028",
-    "training-title":"14 Elements Training"
-};
+var ytPlaylistId = document.querySelector(".youtube-playlist-training").getAttribute("data-yt-playlistid");
+
+function yptChannelInfo(channelId) {
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET","https://www.googleapis.com/youtube/v3/channels?part=snippet&id="+channelId+"&maxResults=1&key="+googleAPIKey);
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState == 4 && xhr.status==200) {
+            var yptPageInfo = {};
+            var data = JSON.parse(xhr.responseText);
+            yptPageInfo.channelIcon = data.items["0"].snippet.thumbnails.high.url;
+            yptPageInfo.channelTitle = data.items["0"].snippet.title;
+            yptPageInfo.channelDescription = data.items["0"].snippet.description;
+            var channelInfoMarkup = "<img src=\""+yptPageInfo.channelIcon+"\" class=\"ypt-channel-icon\" />";
+            channelInfoMarkup += "<p>"+yptPageInfo.channelTitle+"</p>";
+            channelInfoMarkup += "<i>"+yptPageInfo.channelDescription+"</i>";
+            document.querySelector(".ypt-channel-info").innerHTML += channelInfoMarkup;
+        }
+
+
+    }
+    xhr.send();
+
+}
+
+function yptPlaylistInfo() {
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET","https://www.googleapis.com/youtube/v3/playlists?part=snippet&id="+ytPlaylistId+"&maxResults=1&key="+googleAPIKey);
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState == 4 && xhr.status==200) {
+            var yptPageInfo = {};
+            var data = JSON.parse(xhr.responseText);
+            yptPageInfo.title = data.items["0"].snippet.title;
+            yptPageInfo.channelId = data.items["0"].snippet.channelId;
+            yptPageInfo.description = data.items["0"].snippet.description;
+            yptPageInfo.theme = document.querySelector(".youtube-playlist-training").getAttribute("data-theme");
+            yptChannelInfo(yptPageInfo.channelId);
+            document.querySelector(".ypt-title-heading").innerHTML = yptPageInfo.title;
+        }
+
+
+    }
+    xhr.send();
+
+}
+
 function yptInit() {
     if (document.querySelector(".youtube-playlist-training")) {
         var yptMenu = document.createElement("div");
@@ -11,14 +52,16 @@ function yptInit() {
 
         var yptTitleContainer = document.createElement("div");
         yptTitleContainer.setAttribute("class","ypt-page-title");
-        var yptPageTitleNode = document.createTextNode(yptPageDetails["training-title"]);
         var yptTitleHeading = document.createElement("h1");
-        yptTitleHeading.appendChild(yptPageTitleNode);
+        yptTitleHeading.setAttribute("class","ypt-title-heading")
         yptTitleContainer.appendChild(yptTitleHeading);
-        var yptPageTitleNode = document.createTextNode(yptPageDetails["training-title"]);
+        var yptChannelInfo = document.createElement("div");
+        yptChannelInfo.setAttribute("class","ypt-channel-info");
 
         document.querySelector(".youtube-playlist-training").appendChild(yptTitleContainer);
         document.querySelector(".youtube-playlist-training").appendChild(yptMenu);
+        document.querySelector(".ypt-page-title").appendChild(yptChannelInfo);
+        yptPlaylistInfo();
         yptConstruction();
         } else {
             console.error("HTML does not contain target division")
