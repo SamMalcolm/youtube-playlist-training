@@ -1,3 +1,60 @@
-.youtube-playlist-training {
+body .youtube-playlist-training {
+    max-width: 1100px;
+    width: 100%;
+    margin: auto;
+}
 
+body > div > div.ypt-page-title > h1 {
+    font-family:sans-serif;
+}
+
+body .youtube-playlist-training .ypt-video-menu .ypt-menu-card:hover .ypt-menu-text h1.ypt-menu-heading {
+    color:#FF0000;
+}
+
+body .youtube-playlist-training .ypt-video-menu .ypt-menu-card:hover {
+    background-color:#f3f3f3;
+}
+body .youtube-playlist-training .ypt-video-menu .ypt-menu-card {
+    background-color:white;
+    transition:0.2s;
+    width:100%;
+    position:relative;
+    box-shadow: 2px 2px 8px #c3c3c3;
+    padding: 0;
+    clear: both;
+    height:80px;
+    margin-top:10px;
+    border-radius:5px;
+}
+body .youtube-playlist-training .ypt-video-menu .ypt-menu-card .ypt-card-image img {
+    float:left;
+    position:absolute;
+    height:100%;
+    border-radius:6px 0 0 6px;
+}
+body .youtube-playlist-training .ypt-video-menu .ypt-menu-card .ypt-menu-text {
+    margin-left:143px;
+    padding:10px;
+}
+
+body .youtube-playlist-training .ypt-video-menu .ypt-menu-card .ypt-menu-text h1.ypt-menu-heading {
+    font-family:sans-serif;
+    color: black;
+    text-decoration: none;
+    margin:0;
+    font-size:18px;
+}
+
+body .youtube-playlist-training .ypt-video-menu .ypt-menu-card .ypt-menu-text i.ypt-menu-duration {
+    font-family:sans-serif;
+    color: black;
+    text-decoration: none;
+    margin:0;
+    font-size:12px;
+}
+
+
+body .youtube-playlist-training .ypt-video-menu a {
+    text-decoration: none;
 }
