@@ -74,3 +74,8 @@ body > div > div.ypt-page-title > div > p {
     margin-top: 10px;
     margin-bottom: 10px;
 }
+
+body > div > div.ypt-video-menu {
+    width:36%;
+
+}
