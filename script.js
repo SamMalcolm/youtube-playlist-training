@@ -22,6 +22,33 @@ function yptChannelInfo(channelId) {
     xhr.send();
 
 }
+var yptParser = new DOMParser();
+var yptLine;
+
+function yptTranscriptInit(videoId) {
+    document.querySelector(".ypt-transcript-container").innerHTML += "<div class=\"ypt-transcript\" data-video-id=\""+videoId+"\"></div>";
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET","http://video.google.com/timedtext?lang=en&v="+videoId);
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState == 4 && xhr.status==200) {
+            var xmlTranscript=yptParser.parseFromString(xhr.responseText,"text/xml");
+            var yptLines = xmlTranscript.getElementsByTagName("text");
+
+            for (let i=0;i<yptLines.length;i++) {
+                let innerText = yptLines[i].innerHTML.replace("&#39;","'");
+                yptLine = "<span ";
+                yptLine += "data-duration=\""+yptLines[i].getAttribute("dur")+"\" ";
+                yptLine += "data-time=\""+yptLines[i].getAttribute("start")+"\" >";
+                yptLine += innerText;
+                yptLine += "</span>";
+                document.querySelector("div.ypt-transcript[data-video-id='"+videoId+"']").innerHTML += yptLine;
+            }
+
+        }
+}
+    xhr.send();
+}
 
 function yptPlaylistInfo() {
 
@@ -57,10 +84,19 @@ function yptInit() {
         yptTitleContainer.appendChild(yptTitleHeading);
         var yptChannelInfo = document.createElement("div");
         yptChannelInfo.setAttribute("class","ypt-channel-info");
+        var yptInfoContainer = document.createElement("div");
+        yptInfoContainer.setAttribute("class","ypt-page-info");
+
 
         document.querySelector(".youtube-playlist-training").appendChild(yptTitleContainer);
         document.querySelector(".youtube-playlist-training").appendChild(yptMenu);
+        document.querySelector(".youtube-playlist-training").appendChild(yptInfoContainer);
         document.querySelector(".ypt-page-title").appendChild(yptChannelInfo);
+
+        var yptTranscriptContainer = document.createElement("div");
+        yptTranscriptContainer.setAttribute("class","ypt-transcript-container");
+        document.querySelector(".ypt-page-info").appendChild(yptTranscriptContainer);
+
         yptPlaylistInfo();
         yptConstruction();
         } else {
@@ -116,7 +152,6 @@ function setDuration(videoId) {
         if (xhr.readyState == 4 && xhr.status==200) {
             var data = JSON.parse(xhr.responseText);
             duration = data.items["0"].contentDetails.duration;
-            console.log(duration);
             document.querySelector("a[data-video-id='"+videoId+"'] .ypt-menu-card .ypt-menu-text i.ypt-menu-duration").innerHTML = formatDuration(duration);
         }
 
@@ -151,8 +186,6 @@ var xhr = new XMLHttpRequest();
 function yptConstruction() {
 xhr.open("GET", "https://www.googleapis.com/youtube/v3/playlistItems?part=snippet%2CcontentDetails&maxResults=50&playlistId="+ytPlaylistId+"&key="+googleAPIKey);
 xhr.onreadystatechange = function() {
-    console.log("ready state: "+xhr.readyState);
-    console.log("status: "+xhr.status);
     if (xhr.status == 200 && xhr.readyState == 4) {
         var data = JSON.parse(xhr.responseText);
         for (var key in data.items) {
@@ -161,6 +194,7 @@ xhr.onreadystatechange = function() {
                 videoInfo.imguri = data.items[key].snippet.thumbnails.maxres.url;
                 videoInfo.videoId = data.items[key].contentDetails.videoId;
                 document.querySelector(".ypt-video-menu").innerHTML += buildMenuItem(videoInfo);
+                yptTranscriptInit(videoInfo.videoId);
             }
         }
 

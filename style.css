@@ -77,5 +77,16 @@ body > div > div.ypt-page-title > div > p {
 
 body > div > div.ypt-video-menu {
     width:36%;
+    display:inline-block;
 
+}
+
+body > div.youtube-playlist-training > div.ypt-page-info {
+    width: calc(64% - 40px);
+    float: right;
+    display: inline-block;
+    padding: 20px;
+}
+.ypt-transcript span {
+    font-family:sans-serif;
 }
