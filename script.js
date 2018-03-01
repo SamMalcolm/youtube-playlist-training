@@ -1,5 +1,36 @@
+// Provide own API key //
+// This key is a free one and you can generate your own easily //
 var googleAPIKey = "AIzaSyCsdREJq6CTxnBK6miJxZQqD7zbUbWxot0";
+
+
 var ytPlaylistId = document.querySelector(".youtube-playlist-training").getAttribute("data-yt-playlistid");
+var videoInfo = {};
+var yptMenuItem;
+var yptDuration
+var yptminutes;
+var yptseconds;
+var yptParser = new DOMParser();
+var yptLine;
+
+function yptSetVideoById(videoId) {
+
+}
+
+function setVisibleTranscriptById(videoId) {
+
+}
+
+function setActiveLinkById(videoId) {
+
+}
+
+function highlightCurrentTranscript() {
+
+}
+
+function setTranscriptEvents() {
+
+}
 
 function yptChannelInfo(channelId) {
     var xhr = new XMLHttpRequest();
@@ -22,8 +53,6 @@ function yptChannelInfo(channelId) {
     xhr.send();
 
 }
-var yptParser = new DOMParser();
-var yptLine;
 
 function yptTranscriptInit(videoId) {
     document.querySelector(".ypt-transcript-container").innerHTML += "<div class=\"ypt-transcript\" data-video-id=\""+videoId+"\"></div>";
@@ -107,9 +136,6 @@ function yptInit() {
 
 }
 
-var yptminutes;
-var yptseconds;
-
 function formatDuration(duration) {
 
     duration = duration.slice(2,duration.length);
@@ -144,6 +170,7 @@ function formatDuration(duration) {
 
     return yptminutes+"m "+yptseconds+"s";
 }
+
 function setDuration(videoId) {
     var duration;
     var xhr = new XMLHttpRequest();
@@ -160,8 +187,7 @@ function setDuration(videoId) {
     xhr.send();
 
 }
-var yptMenuItem;
-var yptDuration
+
 function buildMenuItem(videoInfo) {
 
     setDuration(videoInfo.videoId);
@@ -179,28 +205,27 @@ function buildMenuItem(videoInfo) {
 
 
 }
-var videoInfo = {
 
-};
-var xhr = new XMLHttpRequest();
 function yptConstruction() {
-xhr.open("GET", "https://www.googleapis.com/youtube/v3/playlistItems?part=snippet%2CcontentDetails&maxResults=50&playlistId="+ytPlaylistId+"&key="+googleAPIKey);
-xhr.onreadystatechange = function() {
-    if (xhr.status == 200 && xhr.readyState == 4) {
-        var data = JSON.parse(xhr.responseText);
-        for (var key in data.items) {
-            if (data.items.hasOwnProperty(key)) {
-                videoInfo.title = data.items[key].snippet.title;
-                videoInfo.imguri = data.items[key].snippet.thumbnails.maxres.url;
-                videoInfo.videoId = data.items[key].contentDetails.videoId;
-                document.querySelector(".ypt-video-menu").innerHTML += buildMenuItem(videoInfo);
-                yptTranscriptInit(videoInfo.videoId);
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", "https://www.googleapis.com/youtube/v3/playlistItems?part=snippet%2CcontentDetails&maxResults=50&playlistId="+ytPlaylistId+"&key="+googleAPIKey);
+    xhr.onreadystatechange = function() {
+        if (xhr.status == 200 && xhr.readyState == 4) {
+            var data = JSON.parse(xhr.responseText);
+            for (var key in data.items) {
+                if (data.items.hasOwnProperty(key)) {
+                    videoInfo.title = data.items[key].snippet.title;
+                    videoInfo.imguri = data.items[key].snippet.thumbnails.maxres.url;
+                    videoInfo.videoId = data.items[key].contentDetails.videoId;
+                    document.querySelector(".ypt-video-menu").innerHTML += buildMenuItem(videoInfo);
+                    yptTranscriptInit(videoInfo.videoId);
+                }
             }
+
         }
-
     }
+
+    xhr.send();
 }
 
-xhr.send();
-}
 yptInit();
