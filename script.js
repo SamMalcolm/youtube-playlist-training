@@ -11,10 +11,12 @@ var yptminutes;
 var yptseconds;
 var yptParser = new DOMParser();
 var yptLine;
+var player;
+var tag = document.createElement('script');
+tag.src = "https://www.youtube.com/iframe_api";
+var firstScriptTag = document.getElementsByTagName('script')[0];
+firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
-function yptSetVideoById(videoId) {
-
-}
 
 function setVisibleTranscriptById(videoId) {
 
@@ -115,13 +117,16 @@ function yptInit() {
         yptChannelInfo.setAttribute("class","ypt-channel-info");
         var yptInfoContainer = document.createElement("div");
         yptInfoContainer.setAttribute("class","ypt-page-info");
+        var yptVideoContainer = document.createElement("div");
+        yptVideoContainer.setAttribute("class","ypt-video-container");
 
 
         document.querySelector(".youtube-playlist-training").appendChild(yptTitleContainer);
+        document.querySelector(".youtube-playlist-training").appendChild(yptVideoContainer);
         document.querySelector(".youtube-playlist-training").appendChild(yptMenu);
         document.querySelector(".youtube-playlist-training").appendChild(yptInfoContainer);
         document.querySelector(".ypt-page-title").appendChild(yptChannelInfo);
-
+        document.querySelector(".ypt-video-container").innerHTML = "<div class=\"ypt-responsive-container\"><div id=\"ypt-player\"></div></div>";
         var yptTranscriptContainer = document.createElement("div");
         yptTranscriptContainer.setAttribute("class","ypt-transcript-container");
         document.querySelector(".ypt-page-info").appendChild(yptTranscriptContainer);
@@ -214,10 +219,14 @@ function yptConstruction() {
             var data = JSON.parse(xhr.responseText);
             for (var key in data.items) {
                 if (data.items.hasOwnProperty(key)) {
+
                     videoInfo.title = data.items[key].snippet.title;
                     videoInfo.imguri = data.items[key].snippet.thumbnails.maxres.url;
                     videoInfo.videoId = data.items[key].contentDetails.videoId;
                     document.querySelector(".ypt-video-menu").innerHTML += buildMenuItem(videoInfo);
+                    if (key == 0) {
+                        yptLoadVideo(videoInfo.videoId);
+                    }
                     yptTranscriptInit(videoInfo.videoId);
                 }
             }
@@ -226,6 +235,38 @@ function yptConstruction() {
     }
 
     xhr.send();
+}
+
+function onYouTubeIframeAPIReady() {
+    player = new YT.Player('ypt-player', {
+        height: '390',
+        width: '640',
+        'videoId':'Z-ulOvJ77zg',
+        'params':{
+            'rel':0
+        },
+        events: {
+            'onReady': OnPlayerReady,
+            'onStateChange': OnPlayerStateChange
+          }
+    });
+}
+
+function OnPlayerReady(event) {
+    event.target.playVideo();
+}
+
+function OnPlayerStateChange(event) {
+
+
+}
+
+function stopVideo() {
+    player.stopVideo();
+}
+
+function yptLoadVideo(videoId) {
+    player.loadVideoById(videoId);
 }
 
 yptInit();
