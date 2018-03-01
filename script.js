@@ -12,10 +12,7 @@ var yptseconds;
 var yptParser = new DOMParser();
 var yptLine;
 var player;
-var tag = document.createElement('script');
-tag.src = "https://www.youtube.com/iframe_api";
-var firstScriptTag = document.getElementsByTagName('script')[0];
-firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
 
 
 function setVisibleTranscriptById(videoId) {
@@ -105,6 +102,12 @@ function yptPlaylistInfo() {
 
 function yptInit() {
     if (document.querySelector(".youtube-playlist-training")) {
+
+        var tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
         var yptMenu = document.createElement("div");
         yptMenu.setAttribute("class","ypt-video-menu");
 
@@ -224,9 +227,9 @@ function yptConstruction() {
                     videoInfo.imguri = data.items[key].snippet.thumbnails.maxres.url;
                     videoInfo.videoId = data.items[key].contentDetails.videoId;
                     document.querySelector(".ypt-video-menu").innerHTML += buildMenuItem(videoInfo);
-                    if (key == 0) {
-                        yptLoadVideo(videoInfo.videoId);
-                    }
+                    //if (key == 0) {
+                    //    yptLoadVideo(videoInfo.videoId);
+                    //}
                     yptTranscriptInit(videoInfo.videoId);
                 }
             }
