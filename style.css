@@ -1,22 +1,26 @@
+body {
+    margin:0;
+    padding:0;
+}
+
 body .youtube-playlist-training {
-    max-width: 1100px;
     width: 100%;
     margin: auto;
 }
 
-body > div > div.ypt-page-title > h1 {
+div.ypt-page-title > h1 {
     font-family:sans-serif;
     margin-bottom:11px;
 }
 
-body .youtube-playlist-training .ypt-video-menu .ypt-menu-card:hover .ypt-menu-text h1.ypt-menu-heading {
+div.ypt-data-container .ypt-video-menu .ypt-menu-card:hover .ypt-menu-text h1.ypt-menu-heading {
     color:#FF0000;
 }
 
-body .youtube-playlist-training .ypt-video-menu .ypt-menu-card:hover {
+div.ypt-data-container .ypt-video-menu .ypt-menu-card:hover {
     background-color:#f3f3f3;
 }
-body .youtube-playlist-training .ypt-video-menu .ypt-menu-card {
+div.ypt-data-container .ypt-video-menu .ypt-menu-card {
     background-color:white;
     transition:0.2s;
     width:100%;
@@ -28,18 +32,18 @@ body .youtube-playlist-training .ypt-video-menu .ypt-menu-card {
     margin-top:10px;
     border-radius:5px;
 }
-body .youtube-playlist-training .ypt-video-menu .ypt-menu-card .ypt-card-image img {
+div.ypt-data-container .ypt-video-menu .ypt-menu-card .ypt-card-image img {
     float:left;
     position:absolute;
     height:100%;
     border-radius:6px 0 0 6px;
 }
-body .youtube-playlist-training .ypt-video-menu .ypt-menu-card .ypt-menu-text {
+div.ypt-data-container .ypt-video-menu .ypt-menu-card .ypt-menu-text {
     margin-left:143px;
     padding:10px;
 }
 
-body .youtube-playlist-training .ypt-video-menu .ypt-menu-card .ypt-menu-text h1.ypt-menu-heading {
+div.ypt-data-container .ypt-video-menu .ypt-menu-card .ypt-menu-text h1.ypt-menu-heading {
     font-family:sans-serif;
     color: black;
     text-decoration: none;
@@ -47,7 +51,7 @@ body .youtube-playlist-training .ypt-video-menu .ypt-menu-card .ypt-menu-text h1
     font-size:15px;
 }
 
-body .youtube-playlist-training .ypt-video-menu .ypt-menu-card .ypt-menu-text i.ypt-menu-duration {
+div.ypt-data-container .ypt-video-menu .ypt-menu-card .ypt-menu-text i.ypt-menu-duration {
     font-family:sans-serif;
     color: black;
     text-decoration: none;
@@ -56,17 +60,17 @@ body .youtube-playlist-training .ypt-video-menu .ypt-menu-card .ypt-menu-text i.
 }
 
 
-body .youtube-playlist-training .ypt-video-menu a {
+div.ypt-data-container .ypt-video-menu a {
     text-decoration: none;
 }
 
-body > div > div.ypt-page-title > div > img {
+div.ypt-page-title > div > img {
     width: 35px;
     border-radius: 5px;
     display: inline-block;
 }
 
-body > div > div.ypt-page-title > div > p {
+div.ypt-page-title > div > p {
     display: inline-block;
     margin-left: 10px;
     font-family: sans-serif;
@@ -75,13 +79,13 @@ body > div > div.ypt-page-title > div > p {
     margin-bottom: 10px;
 }
 
-body > div > div.ypt-video-menu {
+div.ypt-data-container > div.ypt-video-menu {
     width:36%;
     display:inline-block;
 
 }
 
-body > div.youtube-playlist-training > div.ypt-page-info {
+div.ypt-data-container > div.ypt-page-info {
     width: calc(64% - 40px);
     float: right;
     display: inline-block;
@@ -89,4 +93,45 @@ body > div.youtube-playlist-training > div.ypt-page-info {
 }
 .ypt-transcript span {
     font-family:sans-serif;
+    cursor:pointer;
+}
+
+.ypt-transcript span:hover {
+    background:rgb(255, 238, 0);
+}
+.ypt-transcript span.ypt-active {
+    background:rgb(253, 247, 165);
+}
+
+.ypt-data-container {
+    width:100%;
+    max-width: 1100px;
+    margin:auto;
+}
+
+.ypt-responsive-container {
+    position: relative;
+width: 100%;
+max-width: 1100px;
+height: 0;
+padding-bottom: 43%;
+margin: auto;
+}
+
+.ypt-responsive-container iframe {
+    position: absolute;
+top: 0;
+left: 0;
+height: 100%;
+width: 100%;
+}
+.ypt-video-container {
+    width: 100%;
+background: black;
+}
+
+.ypt-header-container {
+    width: 100%;
+max-width: 1100px;
+margin: auto;
 }

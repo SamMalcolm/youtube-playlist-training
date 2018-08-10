@@ -2,11 +2,19 @@
 // This key is a free one and you can generate your own easily //
 var googleAPIKey = "AIzaSyCsdREJq6CTxnBK6miJxZQqD7zbUbWxot0";
 
-
+var yptVideoId = document.querySelector(".youtube-playlist-training").getAttribute("data-yt-videoid");
 var ytPlaylistId = document.querySelector(".youtube-playlist-training").getAttribute("data-yt-playlistid");
+if (typeof ytPlaylistId !== 'undefined') {
+    var playlist = true;
+    var single_video = false;
+}
+if (typeof yptVideoId !== 'undefined') {
+    var playlist = false;
+    var single_video = true;
+}
 var videoInfo = {};
 var yptMenuItem;
-var yptDuration
+var yptDuration;
 var yptminutes;
 var yptseconds;
 var yptParser = new DOMParser();
@@ -14,21 +22,56 @@ var yptLine;
 var player;
 
 
+var transcripts;
+var transcriptContainers;
 
 function setVisibleTranscriptById(videoId) {
-
+    transcripts = document.querySelectorAll(".ypt-transcript span");
+    transcriptContainers = document.querySelectorAll("div.ypt-transcript");
+    console.log("visible transcript");
+    for (let i= 0;i<transcriptContainers.length;i++) {
+        if (transcriptContainers[i].getAttribute("data-video-id") !== videoId) {
+            transcriptContainers[i].style.display="none";
+        } else {
+            transcriptContainers[i].style.display="block";
+        }
+        
+    }
 }
 
-function setActiveLinkById(videoId) {
-
-}
 
 function highlightCurrentTranscript() {
-
+    let playerdata = player.getVideoData();
+    let video_id = playerdata.video_id;
+    let current_time = player.getCurrentTime();
+    var not_done = true;
+    let currentTranscript = document.querySelectorAll(".ypt-transcript[data-video-id='"+video_id+"'] span");
+    for (let i=0;i<currentTranscript.length;i++) {
+        if (currentTranscript[i].getAttribute("data-time") > current_time && not_done) {
+            if (typeof currentTranscript[i-1] !== 'undefined') {
+                currentTranscript[i-1].classList.add("ypt-active");
+            } else {
+                currentTranscript[i].classList.add("ypt-active");
+            }
+            
+            not_done = false;
+        } else {
+            if (currentTranscript[i].classList.contains("ypt-active")) {
+                currentTranscript[i].classList.remove("ypt-active")
+            }
+        }
+    }
 }
 
 function setTranscriptEvents() {
-
+    
+    for (let i= 0;i<transcripts.length;i++) {
+        transcripts[i].addEventListener("click", function (e) {
+            e.preventDefault();
+            player.seekTo(this.getAttribute("data-time"));
+            player.playVideo();
+        }, false);  
+    }
 }
 
 function yptChannelInfo(channelId) {
@@ -71,6 +114,7 @@ function yptTranscriptInit(videoId) {
                 yptLine += innerText;
                 yptLine += "</span>";
                 document.querySelector("div.ypt-transcript[data-video-id='"+videoId+"']").innerHTML += yptLine;
+                setTranscriptEvents();
             }
 
         }
@@ -122,12 +166,17 @@ function yptInit() {
         yptInfoContainer.setAttribute("class","ypt-page-info");
         var yptVideoContainer = document.createElement("div");
         yptVideoContainer.setAttribute("class","ypt-video-container");
+        var menuInfoContainer = document.createElement("div");
+        menuInfoContainer.setAttribute("class","ypt-data-container");
+        var headerContainer = document.createElement("div");
+        headerContainer.setAttribute("class", "ypt-header-container");
 
-
-        document.querySelector(".youtube-playlist-training").appendChild(yptTitleContainer);
+        document.querySelector(".youtube-playlist-training").appendChild(headerContainer);
+        document.querySelector(".ypt-header-container").appendChild(yptTitleContainer);
         document.querySelector(".youtube-playlist-training").appendChild(yptVideoContainer);
-        document.querySelector(".youtube-playlist-training").appendChild(yptMenu);
-        document.querySelector(".youtube-playlist-training").appendChild(yptInfoContainer);
+        document.querySelector(".youtube-playlist-training").appendChild(menuInfoContainer);
+        document.querySelector(".ypt-data-container").appendChild(yptMenu);
+        document.querySelector(".ypt-data-container").appendChild(yptInfoContainer);
         document.querySelector(".ypt-page-title").appendChild(yptChannelInfo);
         document.querySelector(".ypt-video-container").innerHTML = "<div class=\"ypt-responsive-container\"><div id=\"ypt-player\"></div></div>";
         var yptTranscriptContainer = document.createElement("div");
@@ -142,6 +191,10 @@ function yptInit() {
 
 
 
+}
+
+function ysvInit() {
+    
 }
 
 function formatDuration(duration) {
@@ -240,27 +293,54 @@ function yptConstruction() {
     xhr.send();
 }
 
-function onYouTubeIframeAPIReady() {
-    player = new YT.Player('ypt-player', {
-        height: '390',
-        width: '640',
-        'videoId':'Z-ulOvJ77zg',
-        'params':{
-            'rel':0
-        },
-        events: {
-            'onReady': OnPlayerReady,
-            'onStateChange': OnPlayerStateChange
-          }
-    });
+if (playlist && !single_video) {
+    function onYouTubeIframeAPIReady() {
+        player = new YT.Player('ypt-player', {
+            height: '390',
+            width: '640',
+            'videoId':'Z-ulOvJ77zg',
+            'params':{
+                'rel':0
+            },
+            events: {
+                'onReady': OnPlayerReady,
+                'onStateChange': OnPlayerStateChange
+              }
+        });
+        setVisibleTranscriptById('Z-ulOvJ77zg');
+        var tscript_timer = setInterval(highlightCurrentTranscript,300);
+    }
+} else {
+    function onYouTubeIframeAPIReady() {
+        player = new YT.Player('ypt-player', {
+            height: '390',
+            width: '640',
+            'videoId':yptVideoId,
+            'params':{
+                'rel':0
+            },
+            events: {
+                'onReady': OnPlayerReady,
+                'onStateChange': OnPlayerStateChange
+              }
+        });
+        setVisibleTranscriptById(yptVideoId);
+        var tscript_timer = setInterval(highlightCurrentTranscript,300);
+    }
 }
+
 
 function OnPlayerReady(event) {
     event.target.playVideo();
 }
 
 function OnPlayerStateChange(event) {
-
+    console.log(player);
+    let id = player.getVideoData();
+    id = id.video_id;
+    let ct = player.getCurrentTime();
+    highlightCurrentTranscript();
+    setVisibleTranscriptById(id);
 
 }
 
@@ -271,5 +351,9 @@ function stopVideo() {
 function yptLoadVideo(videoId) {
     player.loadVideoById(videoId);
 }
+if (playlist && !single_video) {
+    yptInit();
+} else {
+    ysvInit();
+}
 
-yptInit();
