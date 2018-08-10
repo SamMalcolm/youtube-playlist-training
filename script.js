@@ -1,17 +1,14 @@
 // Provide own API key //
 // This key is a free one and you can generate your own easily //
 var googleAPIKey = "AIzaSyCsdREJq6CTxnBK6miJxZQqD7zbUbWxot0";
-
-var yptVideoId = document.querySelector(".youtube-playlist-training").getAttribute("data-yt-videoid");
-var ytPlaylistId = document.querySelector(".youtube-playlist-training").getAttribute("data-yt-playlistid");
-if (typeof ytPlaylistId !== 'undefined') {
+if (document.querySelector(".youtube-playlist-training").getAttribute("data-p") == "true") {
     var playlist = true;
     var single_video = false;
+    var ytPlaylistId = document.querySelector(".youtube-playlist-training").getAttribute("data-yt-playlistid");
 }
-if (typeof yptVideoId !== 'undefined') {
-    var playlist = false;
-    var single_video = true;
-}
+//var yptVideoId = document.querySelector(".youtube-playlist-training").getAttribute("data-yt-videoid");
+
+
 var videoInfo = {};
 var yptMenuItem;
 var yptDuration;
