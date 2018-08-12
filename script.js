@@ -18,9 +18,80 @@ var yptParser = new DOMParser();
 var yptLine;
 var player;
 
-
 var transcripts;
 var transcriptContainers;
+
+function removeSelectedClass() {
+    var cards = document.querySelectorAll(".ypt-menu-card"); 
+    for (let i=0;i<cards.length;i++) {
+        cards[i].classList.remove("ypt-selected");
+    }
+}
+
+function addEventsToMenu() {
+    var triggers = document.querySelectorAll(".ypt-video-trigger");
+    for (let i=0;i<triggers.length;i++) {
+        triggers[i].addEventListener("click", function(e) {
+            e.preventDefault();
+            player.loadVideoById(this.getAttribute("data-video-id"));
+            removeSelectedClass();
+            this.childNodes[0].classList.add('ypt-selected');
+        }, false);
+    }
+}
+
+function showCorrectCustomMarkup(video_id) {
+    var customMarkupDivs = document.querySelectorAll(".ypt-custom-data");
+    for (let i=0;i<customMarkupDivs.length;i++) {
+        if (customMarkupDivs[i].getAttribute("data-video-id") !== video_id) {
+            customMarkupDivs[i].style.display = "none";
+        } else {
+            customMarkupDivs[i].style.display = "block";
+        }
+    }
+
+}
+function getCustomData() {
+    var xhr = new XMLHttpRequest();
+    if (playlist) {
+        xhr.open("GET",ytPlaylistId+".JSON");
+    } else {
+        xhr.open("GET",ytSingleId+".JSON");
+    }
+    xhr.onreadystatechange = function() {
+        if (xhr.status == 200 && xhr.readyState == 4) {
+            var json = JSON.parse(xhr.responseText);
+            console.log(json);
+            var customDataMarkup = "";
+            for (let i=0;i<json.length;i++) {
+                customDataMarkup = "<div class=\"ypt-custom-data\" data-video-id=\""+json[i].video_id+"\" >";
+                
+                if (typeof json[i].extra_html !== 'undefined') {
+                    customDataMarkup += "<div class=\"ypt-custom-html\">";
+                    customDataMarkup += "<h3>Extra Info: </h3>";
+                    customDataMarkup += json[i].extra_html;
+                    customDataMarkup += "</div>";
+                }
+                if (typeof json[i].extra_resources !== 'undefined') {
+                    customDataMarkup += "<div class=\"ypt-custom-links\">";
+                    customDataMarkup += "<h3>Dive Deeper: </h3>";
+                    customDataMarkup += "<dl>";
+                    for (let a = 0;a < json[i].extra_resources.length;a++) {
+                        customDataMarkup += "<dt>"+json[i].extra_resources[a].description+"</dt>";
+                        customDataMarkup += "<dd><a href=\""+json[i].extra_resources[a].link+"\" >"+json[i].extra_resources[a].link+"</a></dd>";
+                    }
+                    customDataMarkup += "</dl>";
+                    customDataMarkup += "</div>";
+                }
+                customDataMarkup += "</div>";
+            }
+            document.querySelector(".ypt-page-info").innerHTML += customDataMarkup;
+        }
+    }
+    
+
+    xhr.send();
+}
 
 function setVisibleTranscriptById(videoId) {
     transcripts = document.querySelectorAll(".ypt-transcript span");
@@ -143,7 +214,7 @@ function yptPlaylistInfo() {
 
 function yptInit() {
     if (document.querySelector(".youtube-playlist-training")) {
-
+        getCustomData();
         var tag = document.createElement('script');
         tag.src = "https://www.youtube.com/iframe_api";
         var firstScriptTag = document.getElementsByTagName('script')[0];
@@ -281,6 +352,7 @@ function yptConstruction() {
                     //    yptLoadVideo(videoInfo.videoId);
                     //}
                     yptTranscriptInit(videoInfo.videoId);
+                    addEventsToMenu();
                 }
             }
 
@@ -338,6 +410,9 @@ function OnPlayerStateChange(event) {
     let ct = player.getCurrentTime();
     highlightCurrentTranscript();
     setVisibleTranscriptById(id);
+    showCorrectCustomMarkup(id);
+
+    // if autoplay, play next video based on selected
 
 }
 

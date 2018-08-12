@@ -59,6 +59,13 @@ div.ypt-data-container .ypt-video-menu .ypt-menu-card .ypt-menu-text i.ypt-menu-
     font-size:12px;
 }
 
+div.ypt-data-container .ypt-video-menu div.ypt-selected.ypt-menu-card .ypt-menu-text i,
+div.ypt-data-container .ypt-video-menu div.ypt-selected.ypt-menu-card .ypt-menu-text h1 {
+    color:white;
+}
+div.ypt-data-container .ypt-video-menu div.ypt-selected.ypt-menu-card {
+    background:#333;
+}
 
 div.ypt-data-container .ypt-video-menu a {
     text-decoration: none;
