@@ -1,6 +1,30 @@
 // Provide own API key //
 // This key is a free one and you can generate your own easily //
-var googleAPIKey = "AIzaSyCsdREJq6CTxnBK6miJxZQqD7zbUbWxot0";
+
+const getAPIKey = () => {
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET","credentials.json");
+    // {
+    //     "api_key":API_KEY_HERE
+    // }
+    xhr.onreadystatechange = function() {
+        if (xhr.status === 200 && xhr.readyState === 4) {
+            try {
+                let json = JSON.parse(xhr.responseText);
+                console.log(json.api_key);
+                return json.api_key;
+            }
+            catch (err) {
+                console.error(err);
+                return false;
+            }
+        }
+    }
+    xhr.send();
+}
+
+var googleAPIKey = getAPIKey();
+
 if (document.querySelector(".youtube-playlist-training").getAttribute("data-p") == "true") {
     var playlist = true;
     var single_video = false;
@@ -54,9 +78,9 @@ function showCorrectCustomMarkup(video_id) {
 function getCustomData() {
     var xhr = new XMLHttpRequest();
     if (playlist) {
-        xhr.open("GET",ytPlaylistId+".JSON");
+        xhr.open("GET",ytPlaylistId+".json");
     } else {
-        xhr.open("GET",ytSingleId+".JSON");
+        xhr.open("GET",ytSingleId+".json");
     }
     xhr.onreadystatechange = function() {
         if (xhr.status == 200 && xhr.readyState == 4) {
@@ -166,7 +190,6 @@ function yptChannelInfo(channelId) {
 
 function yptTranscriptInit(videoId) {
     document.querySelector(".ypt-transcript-container").innerHTML += "<div class=\"ypt-transcript\" data-video-id=\""+videoId+"\"></div>";
-
     var xhr = new XMLHttpRequest();
     xhr.open("GET","http://video.google.com/timedtext?lang=en&v="+videoId);
     xhr.onreadystatechange = function() {
